@@ -2,15 +2,12 @@
 show limits of OCI services and usage values
 
 The script shows a list of all OCI services, their limits in usage values.
-
+'''
 Usage:  showlimits.py [-s] [-h] [-o outputfile]
-
  -h: print usage
-
  -s: print list of services only
-
  -o <outfile>: print output to the output file
-
+'''
 The script is looking for a configuration file limits.conf located in the same directory. The configuration file must have the following parameters:
 
 [DEFAULT]
