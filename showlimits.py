@@ -147,7 +147,7 @@ def get_limits(limits_client, service_list, region, tenancy_id):
 
 
 ##########################################################################
-# print_usage()
+# print_usage
 ##########################################################################
 def print_usage():
   print ('showlimits.py [-s] [-h] [-o outputfile]')
