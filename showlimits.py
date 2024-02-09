@@ -185,8 +185,8 @@ def main(argv):
   config = configparser.ConfigParser()
   config.read(r'limits.conf')
   tenancy_id = config.get('DEFAULT','tenancy_id')
-  services = config.get('DEFAULT','services')
-  regions = config.get('DEFAULT','regions')
+  services = config.get('DEFAULT','services').split()
+  regions = config.get('DEFAULT','regions').split()
 
   oci_config = oci.config.from_file()
   limits_client = oci.limits.LimitsClient(oci_config)
@@ -198,7 +198,7 @@ def main(argv):
     sys.exit()
   else:
     limits={}
-    for region in regions.split():
+    for region in regions:
       print("############# region " + region + " #############",file=outfile)
       limits[region]=get_limits(limits_client, services, region, tenancy_id)
       for limit in limits[region]:
