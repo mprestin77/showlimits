@@ -1,5 +1,5 @@
 # showlimits
-show limits of OCI services and usage values
+This script shows limits of OCI services and usage values
 
 The script shows a list of all OCI services, their limits in usage values.
 ```
