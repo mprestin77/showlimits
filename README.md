@@ -26,13 +26,12 @@ Setup connectivity using User Authentication
 ```
 1. Login to your OCI Cloud console
 2. Create new group : ShowLimitsGroup  
-3. Create new Policy: ShowUsageGroupPolicy with Statements:
-   Allow group ShowUsageGroup to inspect tenancies in tenancy
-   Allow group ShowUsageGroup to read usage-report in tenancy
-4. Create new User  : showuser.user -> Add to ShowUsageGroup group  
+3. Create new Policy: ShowLimitsGroupPolicy with Statements:
+   Allow group ShowLimitsGroup to inspect resource-availability in tenancy
+4. Add your user to ShowUsageGroup group  
 5. Config OCI config file - ~/.oci/config
    Please follow SDK config documentation - https://docs.cloud.oracle.com/en-us/iaas/Content/API/Concepts/sdkconfig.htm 
-Steps 1-3 are not required for a user member of OCI Administrators group
+Steps 1-4 are not required for a user member of OCI Administrators group
 ```
 
 Setup connectivity using Instance Principals Authentication (to execute the script from an OCI instance)
@@ -40,7 +39,7 @@ Setup connectivity using Instance Principals Authentication (to execute the scri
 1.Login to your OCI Cloud consoleLogin to your OCI Cloud console
 2. Create new Dynamic Group : DynShowLimitsGroup  
    Obtain Compute OCID and add rule - any {ALL {instance.id = 'ocid1.instance.oc1.xxxxxxxxxx'}}
-3. Create new Policy: ShowUsgaeDynamicGroupPolicy with Statements:
+3. Create new Policy: DynShowLimitsGroup with Statements:
    Allow dynamic group DynShowLimitsGroup to inspect resource-availability in tenancy
 ```
 
