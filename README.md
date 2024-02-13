@@ -28,7 +28,7 @@ Setup connectivity using User Authentication
 2. Create new group : ShowLimitsGroup  
 3. Create new Policy: ShowLimitsGroupPolicy with Statements:
    Allow group ShowLimitsGroup to inspect resource-availability in tenancy
-4. Add your user to ShowUsageGroup group  
+4. Add your OCI user to ShowUsageGroup group  
 5. Config OCI config file - ~/.oci/config
    Please follow SDK config documentation - https://docs.cloud.oracle.com/en-us/iaas/Content/API/Concepts/sdkconfig.htm 
 Steps 1-4 are not required for a user member of OCI Administrators group
