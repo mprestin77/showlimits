@@ -34,7 +34,7 @@ Setup connectivity using User Authentication
 Steps 1-4 are not required for a user member of OCI Administrators group
 ```
 
-Setup connectivity using Instance Principals Authentication (to execute the script from an OCI instance)
+Setup connectivity using Instance Principal Authentication (to execute the script from an OCI instance)
 ```
 1.Login to your OCI Cloud consoleLogin to your OCI Cloud console
 2. Create new Dynamic Group : DynShowLimitsGroup  
