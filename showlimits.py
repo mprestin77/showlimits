@@ -41,7 +41,27 @@ import platform
 import sys
 import json
 import configparser
+import argparse
 import getopt
+
+
+##########################################################################
+# set parser
+##########################################################################
+#def get_parser_arguments(argsList=[]):
+def get_parser_arguments(argsList=[]):
+  try:
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-i', action='store_true', default=False, dest='instance_principal', help='Use Instance Principal Authentication')
+    parser.add_argument('-s', action='store_true', default=False, dest='print_services', help='Print Services only')
+    parser.add_argument('-o', default="limits.out", dest='ofile', help='Output File Name (default: limits.out)')
+
+    result = parser.parse_args()
+    return result
+
+  except: 
+    parser.print_help()
+    return None
 
 
 ##########################################################################
@@ -83,6 +103,7 @@ def get_limits(limits_client, service_list, region, tenancy_id):
                         
              if service_list and service.name in service_list:
                 # get the limits per service
+                print("Getting limits for service {0} region {1}".format(service.name, region))
                 limits = [] 
                 try:
                     limits = oci.pagination.list_call_get_all_results(
@@ -153,45 +174,34 @@ def print_usage():
   print ('showlimits.py [-s] [-h] [-o outputfile]')
   print('-h: print usage')
   print('-s: print list of services')
+  print('-i: use instance_principal authentication')
   print('-o <outfile>: print output to the output file')
 
 ##########################################################################
 #  Main 
 ##########################################################################
 def main(argv):
-  outputfile = ''
-  print_services=False
-  try:
-     opts, args = getopt.getopt(argv,"hso:",["ofile="])
-  except getopt.GetoptError:
-     print_usage()
-     sys.exit()
+  args = get_parser_arguments()
+  if args is None:
+      return
 
-  outfile = sys.stdout
+  outfile = open(args.ofile,'w')
+  
+  config_file = configparser.ConfigParser()
+  config_file.read(r'limits.conf')
+  services = config_file.get('DEFAULT','services').split()
+  regions = config_file.get('DEFAULT','regions').split()
 
-  for opt, arg in opts:
-     if opt == '-h':
-       print_usage()
-       sys.exit()
-     elif opt == '-s':
-       print_services=True
-     elif opt in ("-o", "--ofile"):
-       outfile=open(arg, 'w')
-     else:
-       print_usage()
-       sys.exit()
-     
+  if args.instance_principal:
+    signer = oci.auth.signers.InstancePrincipalsSecurityTokenSigner()
+    limits_client = oci.limits.LimitsClient(config={}, signer=signer)
+    tenancy_id = signer.tenancy_id
+  else:
+    config = oci.config.from_file()
+    limits_client = oci.limits.LimitsClient(config=config)
+    tenancy_id = config['tenancy']
 
-  config = configparser.ConfigParser()
-  config.read(r'limits.conf')
-  tenancy_id = config.get('DEFAULT','tenancy_id')
-  services = config.get('DEFAULT','services').split()
-  regions = config.get('DEFAULT','regions').split()
-
-  oci_config = oci.config.from_file()
-  limits_client = oci.limits.LimitsClient(oci_config)
-
-  if print_services:
+  if args.print_services:
     services = get_services(limits_client, tenancy_id)
     for service in services:
       print(service.name)
@@ -203,6 +213,8 @@ def main(argv):
       limits[region]=get_limits(limits_client, services, region, tenancy_id)
       for limit in limits[region]:
         print(json.dumps(limit,indent=2),file=outfile)
+        if limit['available'] and int(limit['value'])>0 and int(limit['available'])==0:
+           print(json.dumps(limit,indent=2))
 
 
 if __name__ == "__main__":
